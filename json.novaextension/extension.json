@@ -1,0 +1,117 @@
+{
+  "identifier": "apexskier.json",
+  "name": "JSON",
+  "organization": "Cameron Little",
+  "description": "Advanced JSON support for Nova",
+  "version": "1.0.0",
+  "categories": ["completions", "languages", "issues", "sidebars"],
+  "license": "MIT",
+  "repository": "https://github.com/apexskier/nova-json-language-server",
+  "bugs": "https://github.com/apexskier/nova-json-language-server/issues",
+
+  "main": "main.dist.js",
+
+  "activationEvents": ["onLanguage:json", "onWorkspaceContains:*.json"],
+
+  "entitlements": {
+    "process": true,
+    "filesystem": "readwrite"
+  },
+
+  "sidebars": [
+    {
+      "id": "apexskier.json.sidebar",
+      "name": "JSON",
+      "smallImage": "SidebarSmall",
+      "largeImage": "SidebarLarge",
+      "sections": [
+        {
+          "id": "apexskier.json.sidebar.info",
+          "name": "Information",
+          "placeholderText": "JSON Extension Information",
+          "headerCommands": [
+            {
+              "title": "Refresh",
+              "image": "__builtin.refresh",
+              "command": "apexskier.json.reload"
+            }
+          ]
+        },
+        {
+          "id": "apexskier.json.sidebar.symbols",
+          "name": "Results",
+          "placeholderText": "Results from “Find Symbol”, “Find Reference” and “Go to Definition” will show here.",
+          "headerCommands": [
+            {
+              "title": "Find Symbol",
+              "image": "Search",
+              "tooltip": "Open the Find Symbol palette",
+              "command": "apexskier.json.findSymbol"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "commands": {
+    "extensions": [
+      {
+        "title": "Preferences",
+        "command": "apexskier.json.openWorkspaceConfig"
+      },
+      {
+        "title": "Restart Server",
+        "command": "apexskier.json.reload"
+      },
+      {
+        "title": "Find Symbol",
+        "command": "apexskier.json.findSymbol"
+      }
+    ],
+    "editor": [
+      {
+        "title": "Go to Definition",
+        "command": "apexskier.json.goToDefinition",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      },
+      {
+        "title": "Find References",
+        "command": "apexskier.json.findReferences",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      },
+      {
+        "title": "Rename Symbol",
+        "command": "apexskier.json.rename",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      },
+      {
+        "title": "Code Action",
+        "command": "apexskier.json.codeAction",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      },
+      {
+        "title": "Offer Suggestions (experimental)",
+        "command": "apexskier.json.autoSuggest",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      },
+      {
+        "title": "Show Documentation (experimental)",
+        "command": "apexskier.json.signatureHelp",
+        "filters": {
+          "syntaxes": ["json"]
+        }
+      }
+    ]
+  }
+}
