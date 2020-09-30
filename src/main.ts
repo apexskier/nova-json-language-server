@@ -1,12 +1,7 @@
+// eslint-disable-next-line no-unused-vars
 import type * as lspTypes from "vscode-languageserver-protocol";
-// import { registerAutoSuggest } from "./commands/autoSuggest";
-// import { registerCodeAction } from "./commands/codeAction";
-// import { registerFindReferences } from "./commands/findReferences";
-// import { registerFindSymbol } from "./commands/findSymbol";
-// import { registerGoToDefinition } from "./commands/goToDefinition";
-// import { registerRename } from "./commands/rename";
-// import { registerSignatureHelp } from "./commands/signatureHelp";
-// import { registerApplyEdit } from "./requests/applyEdit";
+import { registerAutoSuggest } from "./commands/autoSuggest";
+import { registerApplyEdit } from "./requests/applyEdit";
 import { wrapCommand } from "./novaUtils";
 import { InformationView } from "./informationView";
 
@@ -92,24 +87,31 @@ async function asyncActivate() {
   await makeFileExecutable(runFile);
 
   let serviceArgs;
-  if (nova.inDevMode() && nova.workspace.path) {
-    const logDir = nova.path.join(nova.workspace.path, ".log");
+  if (nova.inDevMode()) {
+    const logDir = nova.path.join(nova.extension.path, "logs");
+    await new Promise((resolve, reject) => {
+      const p = new Process("/usr/bin/env", {
+        args: ["mkdir", "-p", logDir],
+      });
+      p.onDidExit((status) => (status === 0 ? resolve() : reject()));
+      p.start();
+    });
     console.log("logging to", logDir);
-
-    // this breaks functionality
-    const inLog = nova.path.join(logDir, "languageClient-in.log");
-    const outLog = nova.path.join(logDir, "languageClient-out.log");
+    // passing inLog breaks some requests for an unknown reason
+    // const inLog = nova.path.join(logDir, "languageServer-in.log");
+    const outLog = nova.path.join(logDir, "languageServer-out.log");
     serviceArgs = {
-      // path: runFile,
       path: "/usr/bin/env",
-      args: ["bash", "-c", `tee "${inLog}" | "${runFile}" | tee "${outLog}"`],
-      // args: ["bash", "-c", `"${runFile}" | tee "${outLog}"`],
+      // args: ["bash", "-c", `tee -a "${inLog}" | "${runFile}" | tee -a "${outLog}"`],
+      args: ["bash", "-c", `"${runFile}" | tee -a "${outLog}"`],
     };
   } else {
     serviceArgs = {
       path: runFile,
     };
   }
+
+  console.log(serviceArgs.args?.join(" "));
 
   client = new LanguageClient(
     "apexskier.json",
@@ -119,23 +121,35 @@ async function asyncActivate() {
       ...serviceArgs,
     },
     {
-      syntaxes: ["json"],
+      syntaxes: ["json", "jsonc"],
     }
   );
 
   // register nova commands
-  // compositeDisposable.add(registerAutoSuggest(client));
-  // compositeDisposable.add(registerCodeAction(client));
-  // compositeDisposable.add(registerFindReferences(client));
-  // compositeDisposable.add(registerFindSymbol(client));
-  // compositeDisposable.add(registerGoToDefinition(client));
-  // compositeDisposable.add(registerRename(client));
-  // if (nova.inDevMode()) {
-  //   compositeDisposable.add(registerSignatureHelp(client));
-  // }
+  compositeDisposable.add(registerAutoSuggest(client));
+
+  void (async () => {
+    const response = await fetch(
+      "https://schemastore.azurewebsites.net/api/json/catalog.json"
+    );
+    const catalog = await response.json();
+
+    const params: lspTypes.DidChangeConfigurationParams = {
+      settings: {
+        json: {
+          format: {
+            enable: false, // TODO
+          },
+          schemas: catalog.schemas,
+          resultLimit: 20, // TODO
+        },
+      },
+    };
+    client.sendNotification("workspace/didChangeConfiguration", params);
+  })();
 
   // register server-pushed commands
-  // registerApplyEdit(client);
+  registerApplyEdit(client);
 
   client.onNotification("window/showMessage", (params) => {
     console.log("window/showMessage", JSON.stringify(params));
@@ -151,24 +165,6 @@ async function asyncActivate() {
   });
 
   client.start();
-
-  const params: lspTypes.DidChangeConfigurationParams = {
-    settings: {
-      json: {
-        format: {
-          enable: false, // TODO
-        },
-        schemas: [
-          {
-            fileMatch: ["tsconfig.json", "*.tsconfig.json"],
-            url: "https://json.schemastore.org/tsconfig",
-          },
-        ],
-        resultLimit: 20, // TODO
-      },
-    },
-  };
-  client.sendNotification("workspace/didChangeConfiguration", params);
 
   informationView.status = "Running";
 

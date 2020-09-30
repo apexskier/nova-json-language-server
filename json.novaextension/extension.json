@@ -15,6 +15,7 @@
 
   "entitlements": {
     "process": true,
+    "requests": true,
     "filesystem": "readwrite"
   },
 
@@ -74,42 +75,42 @@
         "title": "Go to Definition",
         "command": "apexskier.json.goToDefinition",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       },
       {
         "title": "Find References",
         "command": "apexskier.json.findReferences",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       },
       {
         "title": "Rename Symbol",
         "command": "apexskier.json.rename",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       },
       {
         "title": "Code Action",
         "command": "apexskier.json.codeAction",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       },
       {
         "title": "Offer Suggestions (experimental)",
         "command": "apexskier.json.autoSuggest",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       },
       {
         "title": "Show Documentation (experimental)",
         "command": "apexskier.json.signatureHelp",
         "filters": {
-          "syntaxes": ["json"]
+          "syntaxes": ["json", "jsonc"]
         }
       }
     ]
