@@ -2,6 +2,7 @@
 import type * as lspTypes from "vscode-languageserver-protocol";
 import { registerAutoSuggest } from "./commands/autoSuggest";
 import { registerApplyEdit } from "./requests/applyEdit";
+import { registerGoToDefinition } from "./commands/goToDefinition";
 import { wrapCommand } from "./novaUtils";
 import { InformationView } from "./informationView";
 
@@ -127,6 +128,7 @@ async function asyncActivate() {
 
   // register nova commands
   compositeDisposable.add(registerAutoSuggest(client));
+  compositeDisposable.add(registerGoToDefinition(client));
 
   void (async () => {
     const response = await fetch(
