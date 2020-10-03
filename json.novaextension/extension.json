@@ -37,19 +37,6 @@
               "command": "apexskier.json.reload"
             }
           ]
-        },
-        {
-          "id": "apexskier.json.sidebar.symbols",
-          "name": "Results",
-          "placeholderText": "Results from “Find Symbol”, “Find Reference” and “Go to Definition” will show here.",
-          "headerCommands": [
-            {
-              "title": "Find Symbol",
-              "image": "Search",
-              "tooltip": "Open the Find Symbol palette",
-              "command": "apexskier.json.findSymbol"
-            }
-          ]
         }
       ]
     }
