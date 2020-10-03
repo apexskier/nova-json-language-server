@@ -58,16 +58,12 @@
   "commands": {
     "extensions": [
       {
-        "title": "Preferences",
-        "command": "apexskier.json.openWorkspaceConfig"
-      },
-      {
         "title": "Restart Server",
         "command": "apexskier.json.reload"
       },
       {
-        "title": "Find Symbol",
-        "command": "apexskier.json.findSymbol"
+        "title": "Force Unlock Dependency Installation",
+        "command":"apexskier.json.forceClearLock"
       }
     ],
     "editor": [
@@ -79,36 +75,8 @@
         }
       },
       {
-        "title": "Find References",
-        "command": "apexskier.json.findReferences",
-        "filters": {
-          "syntaxes": ["json", "jsonc"]
-        }
-      },
-      {
-        "title": "Rename Symbol",
-        "command": "apexskier.json.rename",
-        "filters": {
-          "syntaxes": ["json", "jsonc"]
-        }
-      },
-      {
-        "title": "Code Action",
-        "command": "apexskier.json.codeAction",
-        "filters": {
-          "syntaxes": ["json", "jsonc"]
-        }
-      },
-      {
         "title": "Offer Suggestions (experimental)",
         "command": "apexskier.json.autoSuggest",
-        "filters": {
-          "syntaxes": ["json", "jsonc"]
-        }
-      },
-      {
-        "title": "Show Documentation (experimental)",
-        "command": "apexskier.json.signatureHelp",
         "filters": {
           "syntaxes": ["json", "jsonc"]
         }
