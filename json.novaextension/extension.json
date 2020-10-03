@@ -63,7 +63,7 @@
       },
       {
         "title": "Force Unlock Dependency Installation",
-        "command":"apexskier.json.forceClearLock"
+        "command": "apexskier.json.forceClearLock"
       }
     ],
     "editor": [

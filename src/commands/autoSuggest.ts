@@ -59,15 +59,6 @@ export function registerAutoSuggest(client: LanguageClient) {
       return;
     }
 
-    const completionItem = (await client.sendRequest(
-      "completionItem/resolve",
-      choice
-    )) as lspTypes.CompletionItem;
-
-    if (nova.inDevMode()) {
-      console.log(JSON.stringify(completionItem, null, "  "));
-    }
-
     const { textEdit, additionalTextEdits, command } = choice;
     if (textEdit) {
       await editor.edit((textEditorEdit) => {
