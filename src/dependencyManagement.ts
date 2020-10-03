@@ -9,7 +9,10 @@ async function clearLock() {
   nova.fs.remove(lockFilePath);
 }
 
-export async function installWrappedDependencies() {
+export async function installWrappedDependencies(
+  compositeDisposable: CompositeDisposable
+) {
+  let done = false;
   const installDir = nova.extension.globalStoragePath;
   nova.fs.mkdir(installDir);
 
@@ -76,8 +79,17 @@ export async function installWrappedDependencies() {
         reject(new Error(`Failed to install:\n\n${errOutput}`));
       }
     });
+    compositeDisposable.add({
+      dispose() {
+        if (!done) {
+          clearLock();
+          process.terminate();
+        }
+      },
+    });
     process.start();
   });
 
   clearLock();
+  done = true;
 }

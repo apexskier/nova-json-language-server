@@ -32,6 +32,9 @@ describe("dependencyManagement", () => {
     );
   });
 
+  const compositeDisposable = {
+    add: jest.fn(),
+  };
   const mockFile = { close: jest.fn() };
   global.console.log = jest.fn();
   nova.fs.open = jest.fn();
@@ -53,6 +56,7 @@ describe("dependencyManagement", () => {
   (global as any).Process = ProcessMock;
 
   beforeEach(() => {
+    compositeDisposable.add.mockReset();
     (nova.fs.open as jest.Mock)
       .mockReset()
       .mockImplementationOnce(() => mockFile);
@@ -63,6 +67,11 @@ describe("dependencyManagement", () => {
     mockFile.close.mockReset();
     ProcessMock.mockReset();
   });
+
+  function expectLockCleared() {
+    expect(nova.fs.remove).toHaveBeenCalledTimes(1);
+    expect(nova.fs.remove).toBeCalledWith("/globalStorage/LOCK");
+  }
 
   it("installs dependencies into extension global storage, and locks globally while doing so", async () => {
     ProcessMock.mockImplementationOnce(() => ({
@@ -75,7 +84,7 @@ describe("dependencyManagement", () => {
       start: jest.fn(),
     }));
 
-    await installWrappedDependencies();
+    await installWrappedDependencies(compositeDisposable);
 
     expect(nova.fs.mkdir).toBeCalledTimes(1);
     expect(nova.fs.mkdir).toBeCalledWith("/globalStorage");
@@ -113,8 +122,8 @@ describe("dependencyManagement", () => {
         NO_UPDATE_NOTIFIER: "true",
       },
     });
-    expect(nova.fs.remove).toHaveBeenCalledTimes(1);
-    expect(nova.fs.remove).toBeCalledWith("/globalStorage/LOCK");
+    expect(compositeDisposable.add).toBeCalledTimes(1);
+    expectLockCleared();
   });
 
   it("removes npm meta files first before replacing them", async () => {
@@ -127,7 +136,7 @@ describe("dependencyManagement", () => {
       .mockImplementationOnce(() => true)
       .mockImplementationOnce(() => false);
 
-    const p = installWrappedDependencies();
+    const p = installWrappedDependencies(compositeDisposable);
 
     expect(nova.fs.open).toBeCalledTimes(1);
     expect(nova.fs.open).toBeCalledWith("/globalStorage/LOCK", "x");
@@ -156,6 +165,7 @@ describe("dependencyManagement", () => {
       onStdout: jest.fn(),
       onStderr: jest.fn((cb) => {
         cb("reason");
+        return { dispose: jest.fn() };
       }),
       onDidExit: jest.fn((cb) => {
         cb(1);
@@ -164,11 +174,35 @@ describe("dependencyManagement", () => {
       start: jest.fn(),
     }));
 
-    await expect(installWrappedDependencies()).rejects
+    await expect(installWrappedDependencies(compositeDisposable)).rejects
       .toThrowErrorMatchingInlineSnapshot(`
             "Failed to install:
 
             reason"
           `);
+  });
+
+  it("hooks a disposable that can cancel and cleanup", async () => {
+    const terminate = jest.fn();
+    ProcessMock.mockImplementationOnce(() => ({
+      onStdout: jest.fn(),
+      onStderr: jest.fn(),
+      onDidExit: jest.fn(() => {
+        return { dispose: jest.fn() };
+      }),
+      start: jest.fn(),
+      terminate,
+    }));
+
+    installWrappedDependencies(compositeDisposable);
+
+    expect(nova.fs.remove).not.toBeCalled();
+    expect(terminate).not.toBeCalled();
+
+    const dispose = compositeDisposable.add.mock.calls[0][0].dispose;
+    dispose();
+
+    expectLockCleared();
+    expect(terminate).toBeCalledTimes(1);
   });
 });

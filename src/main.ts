@@ -40,7 +40,7 @@ async function asyncActivate() {
   informationView.status = "Activating...";
 
   try {
-    await installWrappedDependencies();
+    await installWrappedDependencies(compositeDisposable);
   } catch (err) {
     informationView.status = "Failed to install";
     throw err;
