@@ -1,28 +1,25 @@
 import * as informationViewModule from "./informationView";
 
 jest.mock("./informationView");
-jest.mock("./tsLibPath", () => ({
-  getTsLibPath: () => "/tsLibPath",
-}));
-jest.mock("./isEnabledForJavascript", () => ({
-  isEnabledForJavascript: () => true,
-}));
+jest.mock("./dependencyManagement");
 
 jest.useFakeTimers();
+
+(global as any).fetch = jest.fn(() =>
+  Promise.resolve({
+    json: jest.fn(() => Promise.resolve({ schemas: [] })),
+  })
+);
 
 (global as any).nova = Object.assign(nova, {
   commands: {
     register: jest.fn(),
   },
-  workspace: {
-    path: "/workspace",
-  },
+  workspace: {},
   extension: {
     path: "/extension",
   },
-  fs: {
-    access: jest.fn(),
-  },
+  fs: {},
   path: {
     join(...args: string[]) {
       return args.join("/");
@@ -35,7 +32,8 @@ global.console.log = jest.fn((...args) => {
   if (
     args[0] === "activating..." ||
     args[0] === "activated" ||
-    args[0] === "reloading..."
+    args[0] === "reloading..." ||
+    args[0] === "registered schemas"
   ) {
     return;
   }
@@ -64,6 +62,7 @@ describe("test suite", () => {
     LanguageClientMock.mockReset().mockImplementation(() => ({
       onRequest: jest.fn(),
       onNotification: jest.fn(),
+      sendNotification: jest.fn(),
       start: jest.fn(),
       stop: jest.fn(),
     }));
@@ -86,10 +85,6 @@ describe("test suite", () => {
   test("global behavior", () => {
     expect(nova.commands.register).toBeCalledTimes(2);
     expect(nova.commands.register).toBeCalledWith(
-      "apexskier.json.openWorkspaceConfig",
-      expect.any(Function)
-    );
-    expect(nova.commands.register).toBeCalledWith(
       "apexskier.json.reload",
       expect.any(Function)
     );
@@ -98,25 +93,9 @@ describe("test suite", () => {
   });
 
   function assertActivationBehavior() {
-    expect(nova.commands.register).toBeCalledTimes(6);
+    expect(nova.commands.register).toBeCalledTimes(2);
     expect(nova.commands.register).toBeCalledWith(
       "apexskier.json.goToDefinition",
-      expect.any(Function)
-    );
-    expect(nova.commands.register).toBeCalledWith(
-      "apexskier.json.rename",
-      expect.any(Function)
-    );
-    expect(nova.commands.register).toBeCalledWith(
-      "apexskier.json.codeAction",
-      expect.any(Function)
-    );
-    expect(nova.commands.register).toBeCalledWith(
-      "apexskier.json.findSymbol",
-      expect.any(Function)
-    );
-    expect(nova.commands.register).toBeCalledWith(
-      "apexskier.json.findReferences",
       expect.any(Function)
     );
     expect(nova.commands.register).toBeCalledWith(
@@ -124,18 +103,9 @@ describe("test suite", () => {
       expect.any(Function)
     );
 
-    expect(Process).toBeCalledTimes(3);
-    // installs dependencies
-    expect(Process).toHaveBeenNthCalledWith(1, "/usr/bin/env", {
-      args: ["npm", "install"],
-      cwd: "/extension",
-      stdio: ["ignore", "pipe", "pipe"],
-      env: {
-        NO_UPDATE_NOTIFIER: "true",
-      },
-    });
+    expect(Process).toBeCalledTimes(1);
     // makes the run script executable
-    expect(Process).toHaveBeenNthCalledWith(2, "/usr/bin/env", {
+    expect(Process).toHaveBeenCalledWith("/usr/bin/env", {
       args: ["chmod", "u+x", "/extension/run.sh"],
     });
 
@@ -144,9 +114,13 @@ describe("test suite", () => {
       LanguageClientMock.mock.results[0].value;
     expect(languageClient.start).toBeCalledTimes(1);
 
-    expect(languageClient.onRequest).toBeCalledTimes(1);
+    expect(languageClient.onRequest).toBeCalledTimes(2);
     expect(languageClient.onRequest).toBeCalledWith(
       "workspace/applyEdit",
+      expect.any(Function)
+    );
+    expect(languageClient.onRequest).toBeCalledWith(
+      "vscode/content",
       expect.any(Function)
     );
 
@@ -159,9 +133,16 @@ describe("test suite", () => {
   }
 
   describe("activate and deactivate", () => {
-    it("installs dependencies, runs the server, gets the ts version", async () => {
+    it("installs dependencies, runs the server, fetches schemas", async () => {
       resetMocks();
-
+      const remoteSchemaMapping = Symbol("remote schema mapping");
+      ((global as any).fetch as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          json: jest.fn(() =>
+            Promise.resolve({ schemas: [remoteSchemaMapping] })
+          ),
+        })
+      );
       (ProcessMock as jest.Mock<Partial<Process>>)
         .mockImplementationOnce(() => ({
           onStdout: jest.fn(),
@@ -180,38 +161,36 @@ describe("test suite", () => {
             return { dispose: jest.fn() };
           }),
           start: jest.fn(),
-        }))
-        .mockImplementationOnce(() => ({
-          onStdout: jest.fn((cb) => {
-            cb("ts v1.2.3\n");
-            return { dispose: jest.fn() };
-          }),
-          onStderr: jest.fn(),
-          onDidExit: jest.fn(),
-          start: jest.fn(),
         }));
 
       await activate();
 
       assertActivationBehavior();
 
-      // typescript version is reported in the information view
-      const informationView = (informationViewModule.InformationView as jest.Mock<
-        informationViewModule.InformationView
-      >).mock.instances[0];
-      expect(informationView.tsVersion).toBeUndefined();
-      const tsVersionProcess: Process = ProcessMock.mock.results[2].value;
-      const exitCB = (tsVersionProcess.onDidExit as jest.Mock).mock.calls[0][0];
-      exitCB(0);
-      // allow promise to execute
-      await new Promise(setImmediate);
-      expect(informationView.tsVersion).toBe("ts v1.2.3");
-
       deactivate();
 
       const languageClient: LanguageClient =
         LanguageClientMock.mock.results[0].value;
       expect(languageClient.stop).toBeCalledTimes(1);
+      expect(languageClient.sendNotification).toBeCalledTimes(1);
+      expect(languageClient.sendNotification).toBeCalledWith(
+        "workspace/didChangeConfiguration",
+        {
+          settings: {
+            json: {
+              schemas: [
+                {
+                  description: "Nova extension manifest file",
+                  fileMatch: ["*.novaextension/extension.json"],
+                  name: "Nova Extension",
+                  url: "file:///extension/nova-extension-schema.json",
+                },
+                remoteSchemaMapping,
+              ],
+            },
+          },
+        }
+      );
       const compositeDisposable: CompositeDisposable =
         CompositeDisposableMock.mock.results[0].value;
       expect(compositeDisposable.dispose).toBeCalledTimes(1);
@@ -222,26 +201,17 @@ describe("test suite", () => {
       global.console.error = jest.fn();
       global.console.warn = jest.fn();
       nova.workspace.showErrorMessage = jest.fn();
-
-      (ProcessMock as jest.Mock<Partial<Process>>).mockImplementationOnce(
-        () => ({
-          onStdout: jest.fn(),
-          onStderr: jest.fn((cb) => {
-            cb("some output on stderr");
-            return { dispose: jest.fn() };
-          }),
-          onDidExit: jest.fn((cb) => {
-            cb(1);
-            return { dispose: jest.fn() };
-          }),
-          start: jest.fn(),
-        })
+      const dependencyManagementModule = require("./dependencyManagement");
+      (dependencyManagementModule.installWrappedDependencies as jest.Mock).mockImplementationOnce(
+        () => {
+          throw new Error("an error");
+        }
       );
 
       await activate();
 
       expect(nova.workspace.showErrorMessage).toBeCalledWith(
-        new Error("Failed to install:\n\nsome output on stderr")
+        new Error("an error")
       );
     });
 
