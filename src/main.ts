@@ -176,6 +176,16 @@ async function asyncActivate() {
   compositeDisposable.add(registerAutoSuggest(client));
   compositeDisposable.add(registerGoToDefinition(client));
 
+  const extensionManifestSchema = {
+    name: "Nova Extension",
+    description: "Nova extension manifest file",
+    url: `file://${nova.path.join(
+      nova.extension.path,
+      "nova-extension-schema.json"
+    )}`,
+    fileMatch: ["*.novaextension/extension.json"],
+  };
+
   void (async () => {
     const response = await fetch(
       "https://schemastore.azurewebsites.net/api/json/catalog.json"
@@ -188,7 +198,7 @@ async function asyncActivate() {
           format: {
             enable: false, // TODO
           },
-          schemas: catalog.schemas,
+          schemas: [extensionManifestSchema, ...catalog.schemas],
           resultLimit: 20, // TODO
         },
       },
