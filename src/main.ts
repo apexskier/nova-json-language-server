@@ -1,15 +1,19 @@
 // eslint-disable-next-line no-unused-vars
 import type * as lspTypes from "vscode-languageserver-protocol";
+import { dependencyManagement } from "nova-extension-utils";
 import { registerAutoSuggest } from "./commands/autoSuggest";
 import { registerApplyEdit } from "./requests/applyEdit";
 import { registerGoToDefinition } from "./commands/goToDefinition";
 import { InformationView } from "./informationView";
-import { installWrappedDependencies } from "./dependencyManagement";
 
 nova.commands.register("apexskier.json.reload", reload);
 
 let client: LanguageClient | null = null;
 const compositeDisposable = new CompositeDisposable();
+
+dependencyManagement.registerDependencyUnlockCommand(
+  "apexskier.json.command.forceUnlock"
+);
 
 async function makeFileExecutable(file: string) {
   return new Promise((resolve, reject) => {
@@ -40,7 +44,7 @@ async function asyncActivate() {
   informationView.status = "Activating...";
 
   try {
-    await installWrappedDependencies(compositeDisposable);
+    await dependencyManagement.installWrappedDependencies(compositeDisposable);
   } catch (err) {
     informationView.status = "Failed to install";
     throw err;
@@ -84,7 +88,7 @@ async function asyncActivate() {
       ...serviceArgs,
       env: {
         WORKSPACE_DIR: nova.workspace.path ?? "",
-        INSTALL_DIR: nova.extension.globalStoragePath,
+        INSTALL_DIR: dependencyManagement.getDependencyDirectory(),
       },
     },
     {

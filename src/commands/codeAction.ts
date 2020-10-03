@@ -1,8 +1,9 @@
 // eslint-disable-next-line no-unused-vars
 import type * as lspTypes from "vscode-languageserver-protocol";
 import * as lsp from "vscode-languageserver-types";
+import { asyncNova } from "nova-extension-utils";
 import { applyWorkspaceEdit } from "../applyWorkspaceEdit";
-import { wrapCommand, showChoicePalette } from "../novaUtils";
+import { wrapCommand } from "../novaUtils";
 import { rangeToLspRange } from "../lspNovaConversions";
 
 // @Panic: this is totally decoupled from typescript, so it could totally be native to Nova
@@ -43,7 +44,7 @@ export function registerCodeAction(client: LanguageClient) {
       return;
     }
 
-    const choice = await showChoicePalette(response, (c) => c.title, {
+    const choice = await asyncNova.showChoicePalette(response, (c) => c.title, {
       placeholder: "Choose an action",
     });
     if (choice == null) {

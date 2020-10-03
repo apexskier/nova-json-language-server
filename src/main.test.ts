@@ -1,7 +1,7 @@
 import * as informationViewModule from "./informationView";
 
 jest.mock("./informationView");
-jest.mock("./dependencyManagement");
+jest.mock("nova-extension-utils");
 
 jest.useFakeTimers();
 
@@ -83,7 +83,7 @@ describe("test suite", () => {
   )[1];
 
   test("global behavior", () => {
-    expect(nova.commands.register).toBeCalledTimes(2);
+    expect(nova.commands.register).toBeCalledTimes(1);
     expect(nova.commands.register).toBeCalledWith(
       "apexskier.json.reload",
       expect.any(Function)
@@ -201,7 +201,9 @@ describe("test suite", () => {
       global.console.error = jest.fn();
       global.console.warn = jest.fn();
       nova.workspace.showErrorMessage = jest.fn();
-      const dependencyManagementModule = require("./dependencyManagement");
+      const {
+        dependencyManagement: dependencyManagementModule,
+      } = require("nova-extension-utils");
       (dependencyManagementModule.installWrappedDependencies as jest.Mock).mockImplementationOnce(
         () => {
           throw new Error("an error");
