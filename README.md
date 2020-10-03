@@ -6,10 +6,4 @@ This uses [vscode-json-languageserver](https://www.npmjs.com/package/vscode-json
 
 [Extension README](./json.novaextension/README.md)
 
-WIP - there are some major crashing bugs in Nova with language servers preventing
-great development on this.
-
-## TODOs
-
-- Schemas support yaml, could this? https://github.com/adamvoss/vscode-yaml-languageservice
-- Auto-match with [schemastore catalog](https://github.com/SchemaStore/schemastore/blob/master/src/api/json/catalog.json)
+Logo from [json-schema.org](https://github.com/json-schema-org/json-schema-org.github.io/blob/8ca1e94f2f7c6f3f583740115456f30d3b717af4/assets/logo.svg)
