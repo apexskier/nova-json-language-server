@@ -105,12 +105,12 @@
               "description": "Defines one or more objects that are used as pattern matchers (regular expressions). If one object is provided, it is the sole pattern used. If an array object is provided, each pattern will be matched successively (if the first fails, it matcher will stop). This allows matching more complex, multi-line output.",
               "anyOf": [
                 {
-                  "$ref": "#/definition/issueMatcherPattern"
+                  "$ref": "#/definitions/issueMatcherPattern"
                 },
                 {
                   "type": "array",
                   "items": {
-                    "$ref": "#/definition/issueMatcherPattern"
+                    "$ref": "#/definitions/issueMatcherPattern"
                   }
                 }
               ]
@@ -213,22 +213,25 @@
                 },
                 "headerCommands": {
                   "description": "An array of Command definitions that will be shown as buttons in the header of the section. These buttons may be enabled and disabled using the when clause of the command.",
-                  "allOf": [
-                    { "$ref": "#/definitions/commandList" },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "image": {
-                          "description": "Path to an image to display as a button to invoke this command",
-                          "type": "string"
-                        },
-                        "tooltip": {
-                          "description": "Tooltip to be displayed when hovering over button",
-                          "type": "string"
+                  "type": "array",
+                  "items": {
+                    "allOf": [
+                      { "$ref": "#/definitions/command" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "image": {
+                            "description": "Path to an image to display as a button to invoke this command",
+                            "type": "string"
+                          },
+                          "tooltip": {
+                            "description": "Tooltip to be displayed when hovering over button",
+                            "type": "string"
+                          }
                         }
                       }
-                    }
-                  ]
+                    ]
+                  }
                 },
                 "contextualCommands": {
                   "description": "An array of Command definitions that will be shown in the contextual menu of the sidebar. These buttons may be enabled and disabled using the when clause of the command.",
