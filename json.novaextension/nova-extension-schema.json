@@ -444,19 +444,17 @@
           "description": "A command name registered with the CommandsRegistry that will be invoked when the item is shown to resolve the array of pre-populated values (enum types only). See Enum Values for more information.",
           "type": "string"
         },
-        "allowsFiles": {
+        "allowFiles": {
           "description": "Whether the item allows choosing files from open panels (path types only, default is true)",
           "type": "boolean"
         },
-        "allowsFolders": {
+        "allowFolders": {
           "description": "Whether the item allows choosing folders from open panels (path types only, default is false)",
-          "type": "boolean",
-          "default": false
+          "type": "boolean"
         },
         "relative": {
           "description": "Whether the item prefers relative paths when choosing paths from open panels (path types only, default is false)",
-          "type": "boolean",
-          "default": false
+          "type": "boolean"
         },
         "filetype": {
           "description": "An array of strings that denotes the type of files (by extension or Uniform Type Identifier) that are valid for choosing in open panels (path types only)",
