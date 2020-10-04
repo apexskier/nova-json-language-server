@@ -30,9 +30,7 @@ If applicable, add screenshots to help explain your problem.
 **Environment**
 
 - Nova version: <!-- [e.g. 1.0 (200961)] get this from Nova > About Nova -->
-- Extension version: <!-- [e.g. 1.7.0] get this from the Nova Extension Library -->
-- TypeScript version: <!-- [e.g. 4.0.2] get this from your project, e.g. run `yarn run tsc --version` in your terminal -->
-- Sidebar information: <!-- [e.g. Status Running, TypeScript Version 4.0.2] get this from the extension sidebar -->
+- Extension version: <!-- [e.g. 1.0.1] get this from the Nova Extension Library -->
 - macOS version: <!-- [e.g. 10.15.5 (19F101)] get this from  > About This Mac -->
 - NodeJS information:
   - node version: <!-- [e.g. v14.4.0] get this by running `node --version` in your terminal -->
@@ -41,7 +39,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Extension console output**
 
-Turn on extension development in Nova in Preferences > General > Extension Development. Then open the extension console with Extensions > Show Extension Console and copy anything coming from the Source "TypeScript" or "TypeScript Language Server".
+Turn on extension development in Nova in Preferences > General > Extension Development. Then open the extension console with Extensions > Show Extension Console and copy anything coming from the Source "JSON" or "JSON Language Server".
 Copying text is preferred over screenshots, for accessibility and searching.
 
 **Additional context**
