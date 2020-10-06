@@ -510,7 +510,7 @@
           "type": "boolean"
         }
       },
-      "required": ["regexp", "message", "line", "severity", "loop"]
+      "required": ["regexp", "message", "line", "severity"]
     }
   }
 }
