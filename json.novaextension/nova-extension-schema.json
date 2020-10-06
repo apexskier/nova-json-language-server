@@ -474,7 +474,7 @@
         },
         "message": {
           "description": "a capture number for the user-readable message that should be displayed to the user",
-          "type": "string"
+          "type": "number"
         },
         "line": {
           "description": "a capture number for the line number where the issue begins",
