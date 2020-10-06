@@ -439,7 +439,17 @@
         "values": {
           "description": "An array of pre-populated values to display for an item (enum types only). See Enum Values for more information.",
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": { "type": "string" }
+              }
+            ]
+          }
         },
         "resolve": {
           "description": "A command name registered with the CommandsRegistry that will be invoked when the item is shown to resolve the array of pre-populated values (enum types only). See Enum Values for more information.",
