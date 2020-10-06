@@ -413,7 +413,8 @@
         "default": { "description": "The default value of the item" },
         "children": {
           "description": "Child items displayed beneath and indented from the item (section types only)",
-          "$ref": "#/definitions/configItem"
+          "type": "array",
+          "items": { "$ref": "#/definitions/configItem" }
         },
         "max": {
           "description": "The maximum value of the item (number types only)",
