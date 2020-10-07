@@ -413,7 +413,7 @@
         "default": { "description": "The default value of the item" },
         "children": {
           "description": "Child items displayed beneath and indented from the item (section types only)",
-          "$ref": "#/definitions/configItem"
+          "$ref": "#/definitions/configItemList"
         },
         "max": {
           "description": "The maximum value of the item (number types only)",
@@ -438,7 +438,15 @@
         "values": {
           "description": "An array of pre-populated values to display for an item (enum types only). See Enum Values for more information.",
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              {
+                "type": "array",
+                "items": [{ "type": "string" }, { "type": "string" }]
+              }
+            ]
+          }
         },
         "resolve": {
           "description": "A command name registered with the CommandsRegistry that will be invoked when the item is shown to resolve the array of pre-populated values (enum types only). See Enum Values for more information.",
@@ -473,7 +481,7 @@
         },
         "message": {
           "description": "a capture number for the user-readable message that should be displayed to the user",
-          "type": "string"
+          "type": "number"
         },
         "line": {
           "description": "a capture number for the line number where the issue begins",
@@ -509,7 +517,7 @@
           "type": "boolean"
         }
       },
-      "required": ["regexp", "message", "line", "severity", "loop"]
+      "required": ["regexp", "message", "line", "severity"]
     }
   }
 }
