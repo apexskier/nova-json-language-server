@@ -443,7 +443,10 @@
               { "type": "string" },
               {
                 "type": "array",
-                "items": [{ "type": "string" }, { "type": "string" }]
+                "items": [
+                  { "type": ["string", "null"] },
+                  { "type": "string" }
+                ]
               }
             ]
           }
