@@ -443,9 +443,7 @@
               { "type": "string" },
               {
                 "type": "array",
-                "minItems": 2,
-                "maxItems": 2,
-                "items": { "type": "string" }
+                "items": [{ "type": "string" }, { "type": "string" }]
               }
             ]
           }
