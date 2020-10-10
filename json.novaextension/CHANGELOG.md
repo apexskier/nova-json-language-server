@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.3
+
+### Fixed
+
+- Fix type issue in configItem enum JSON schema
+
+### Changed
+
+- Release management automation
+
 ## 1.0.2
 
 ### Fixed
