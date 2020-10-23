@@ -86,6 +86,29 @@
         }
       }
     },
+    "funding": {
+      "description": "A string or object describing the URL to the extension’s issue tracker",
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "This represents the URL"
+        },
+        {
+          "type": "object",
+          "description": "It is generally preferred to use a URL value of some type over an email address / mailto: link",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "A string representing the URL"
+            },
+            "email": {
+              "type": "string",
+              "description": "An email address that will be the target of a `mailto:` link"
+            }
+          }
+        }
+      ]
+    },
     "homepage": {
       "description": "URL to the extension’s homepage, if any",
       "type": "string"
