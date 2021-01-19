@@ -1,5 +1,14 @@
 # Changelog
 
+## future
+
+### Added
+
+- Update extension schema with Nova 3 and 4 features
+  - Funding link
+  - Array preference types
+  - Radio preference display
+
 ## 1.0.3
 
 ### Fixed
