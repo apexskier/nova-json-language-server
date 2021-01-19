@@ -6,7 +6,7 @@ import { wrapCommand } from "../novaUtils";
 import { executeCommand } from "./codeAction";
 
 export function registerAutoSuggest(client: LanguageClient) {
-  // TODO: in future this could use "client/registerCapability" to add more functionlity, if the language server supports
+  // TODO: in future this could use "client/registerCapability" to add more functionality, if the language server supports
 
   return nova.commands.register(
     "apexskier.json.autoSuggest",

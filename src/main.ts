@@ -16,7 +16,7 @@ dependencyManagement.registerDependencyUnlockCommand(
 );
 
 async function makeFileExecutable(file: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const process = new Process("/usr/bin/env", {
       args: ["chmod", "u+x", file],
     });
@@ -58,7 +58,7 @@ async function asyncActivate() {
   let serviceArgs;
   if (nova.inDevMode()) {
     const logDir = nova.path.join(nova.extension.workspaceStoragePath, "logs");
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const p = new Process("/usr/bin/env", {
         args: ["mkdir", "-p", logDir],
       });
