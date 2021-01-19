@@ -239,6 +239,7 @@ describe("Location search results tree", () => {
     expect(provider.getChildren("fileURI2")).toEqual(locations.slice(1));
     expect(provider.getTreeItem("fileURI1")).toMatchInlineSnapshot(`
       MockTreeItem {
+        "command": "apexskier.json.showSearchResult",
         "name": "fileURI1",
         "path": "fileURI1",
         "state": undefined,
@@ -246,23 +247,24 @@ describe("Location search results tree", () => {
     `);
     expect(provider.getTreeItem(locations[0])).toMatchInlineSnapshot(`
       MockTreeItem {
+        "command": "apexskier.json.showSearchResult",
+        "descriptiveText": ":2:3",
         "name": "name",
         "state": Symbol(TreeItemCollapsibleState.None),
       }
     `);
   });
 
-  it.only("cleans filepaths before rendering them", () => {
+  it("cleans filepaths before rendering them", () => {
     (nova.workspace as any).path = "/workspace";
+    nova.environment["HOME"] = "/home";
     createLocationSearchResultsTree("name", locations);
     const provider: TreeDataProvider<string | lspTypes.SymbolInformation> =
       TreeViewTypedMock.mock.calls[0][1].dataProvider;
     expect(provider.getTreeItem("file:///workspace/path").name).toBe("./path");
     expect(provider.getTreeItem("file:///home/path").name).toBe("~/path");
     expect(provider.getTreeItem("file:///path").name).toBe("/path");
-    expect(
-      provider.getTreeItem("file:///Volumes/Macintosh HD/home/path").name
-    ).toBe("~/path");
+    expect(provider.getTreeItem("file:///home/path").name).toBe("~/path");
   });
 });
 
