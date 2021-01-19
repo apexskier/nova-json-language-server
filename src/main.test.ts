@@ -41,9 +41,9 @@ global.console.log = jest.fn((...args) => {
 });
 global.console.info = jest.fn();
 
-const CompositeDisposableMock: jest.Mock<Partial<
-  CompositeDisposable
->> = jest
+const CompositeDisposableMock: jest.Mock<
+  Partial<CompositeDisposable>
+> = jest
   .fn()
   .mockImplementation(() => ({ add: jest.fn(), dispose: jest.fn() }));
 (global as any).CompositeDisposable = CompositeDisposableMock;
@@ -125,9 +125,8 @@ describe("test suite", () => {
     );
 
     expect(informationViewModule.InformationView).toBeCalledTimes(1);
-    const informationView = (informationViewModule.InformationView as jest.Mock<
-      informationViewModule.InformationView
-    >).mock.instances[0];
+    const informationView = (informationViewModule.InformationView as jest.Mock<informationViewModule.InformationView>)
+      .mock.instances[0];
     expect(informationView.status).toBe("Running");
     expect(informationView.reload).toBeCalledTimes(1);
   }
