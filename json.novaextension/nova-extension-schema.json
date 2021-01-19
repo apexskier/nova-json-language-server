@@ -409,7 +409,9 @@
             "enum",
             "text",
             "section",
-            "command"
+            "command",
+            "stringArray",
+            "pathArray"
           ]
         },
         "required": {
@@ -448,6 +450,10 @@
         },
         "allowsCustom": {
           "description": "Whether the item supports custom text values to be entered (enum types only)",
+          "type": "boolean"
+        },
+        "radio": {
+          "description": "Whether the item should prefer being displayed using radio buttons when possible (enum types only)",
           "type": "boolean"
         },
         "command": {
