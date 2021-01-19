@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import type * as lspTypes from "vscode-languageserver-protocol";
+import * as lsp from "vscode-languageserver-types";
 import { asyncNova } from "nova-extension-utils";
 import { rangeToLspRange, lspRangeToRange } from "../lspNovaConversions";
 import { wrapCommand } from "../novaUtils";
@@ -63,8 +64,19 @@ export function registerAutoSuggest(client: LanguageClient) {
     const { textEdit, additionalTextEdits, command } = choice;
     if (textEdit) {
       await editor.edit((textEditorEdit) => {
-        const range = lspRangeToRange(editor.document, textEdit.range);
-        textEditorEdit.replace(range, textEdit.newText);
+        if (lsp.InsertReplaceEdit.is(textEdit)) {
+          if (textEdit.insert) {
+            const range = lspRangeToRange(editor.document, textEdit.insert);
+            textEditorEdit.insert(range.start, textEdit.newText);
+          }
+          if (textEdit.replace) {
+            const range = lspRangeToRange(editor.document, textEdit.replace);
+            textEditorEdit.replace(range, textEdit.newText);
+          }
+        } else {
+          const range = lspRangeToRange(editor.document, textEdit.range);
+          textEditorEdit.replace(range, textEdit.newText);
+        }
       });
     } else {
       await editor.insert(choice.insertText ?? choice.label);
