@@ -49,6 +49,7 @@
     "vscode-languageserver-types": "^3.16.0"
   },
   "resolutions": {
-    "minimist": "^0.2.1"
+    "minimist": "^0.2.1",
+    "tslib": "^2.1.0"
   }
 }
