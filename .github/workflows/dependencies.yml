@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Auto merge (dependency updates)
-        uses: pascalgn/automerge-action@v0.13.1
+        uses: apexskier/automerge-action@workflow_run-events
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MERGE_METHOD: squash
