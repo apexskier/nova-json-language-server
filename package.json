@@ -28,7 +28,7 @@
   "homepage": "https://github.com/apexskier/nova-json-language-server",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-node-resolve": "^11.2.1",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@types/jest": "^26.0.23",
     "@types/nova-editor-node": "^4.1.2",
     "@types/whatwg-fetch": "^0.0.33",
