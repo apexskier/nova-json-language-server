@@ -53,7 +53,7 @@ describe("codeAction command", () => {
       sendRequest: jest.fn().mockReturnValueOnce(Promise.resolve([])),
     };
     const command = getCommand(
-      (mockLanguageClient as any) as LanguageClient,
+      mockLanguageClient as any as LanguageClient,
       registerCodeAction
     );
     await command(mockEditor);
@@ -103,7 +103,7 @@ describe("codeAction command", () => {
           .mockReturnValueOnce(Promise.resolve("response")),
       };
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerCodeAction
       );
       await command(mockEditor);
@@ -136,7 +136,7 @@ describe("codeAction command", () => {
           .mockReturnValueOnce(Promise.resolve("response")),
       };
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerCodeAction
       );
 

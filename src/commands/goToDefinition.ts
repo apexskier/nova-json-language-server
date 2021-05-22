@@ -20,8 +20,10 @@ export function registerGoToDefinition(client: LanguageClient) {
 
   async function goToDefinition(editor: TextEditor) {
     const selectedRange = editor.selectedRange;
-    const selectedPosition = rangeToLspRange(editor.document, selectedRange)
-      ?.start;
+    const selectedPosition = rangeToLspRange(
+      editor.document,
+      selectedRange
+    )?.start;
     if (!selectedPosition) {
       nova.workspace.showWarningMessage(
         "Couldn't figure out what you've selected."
