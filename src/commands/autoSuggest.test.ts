@@ -55,7 +55,7 @@ describe.only("autoSuggest command", () => {
       sendRequest: jest.fn().mockReturnValueOnce(Promise.resolve(null)),
     };
     const command = getCommand(
-      (mockLanguageClient as any) as LanguageClient,
+      mockLanguageClient as any as LanguageClient,
       registerAutoSuggest
     );
     await command(mockEditor);
@@ -67,14 +67,12 @@ describe.only("autoSuggest command", () => {
   });
 
   it("applies a suggestion if chosen", async () => {
-    (nova.workspace
-      .showChoicePalette as jest.Mock) = jest
+    (nova.workspace.showChoicePalette as jest.Mock) = jest
       .fn()
       .mockImplementationOnce((a, b, cb) => {
         cb(null, 0);
       });
-    (nova.workspace
-      .showActionPanel as jest.Mock) = jest
+    (nova.workspace.showActionPanel as jest.Mock) = jest
       .fn()
       .mockImplementationOnce((a, b, cb) => {
         cb(0);
@@ -108,7 +106,7 @@ describe.only("autoSuggest command", () => {
         .mockReturnValueOnce(Promise.resolve(resolvedSuggestion)),
     };
     const command = getCommand(
-      (mockLanguageClient as any) as LanguageClient,
+      mockLanguageClient as any as LanguageClient,
       registerAutoSuggest
     );
     await command(mockEditor);

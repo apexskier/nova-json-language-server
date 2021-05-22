@@ -85,7 +85,7 @@ describe("goToDefinition command", () => {
     it("warns if definition can't be found", async () => {
       mockLanguageClient.sendRequest.mockReturnValueOnce(Promise.resolve(null));
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -97,7 +97,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(result)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -117,7 +117,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(result)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -138,7 +138,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(result)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -163,7 +163,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(result)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -193,7 +193,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(results)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);
@@ -240,7 +240,7 @@ describe("goToDefinition command", () => {
         Promise.resolve(results)
       );
       const command = getCommand(
-        (mockLanguageClient as any) as LanguageClient,
+        mockLanguageClient as any as LanguageClient,
         registerGoToDefinition
       );
       await command(mockEditor);

@@ -41,11 +41,8 @@ export function registerAutoSuggest(client: LanguageClient) {
     }
 
     // NOTE: isIncomplete isn't handled here
-    const items = (Array.isArray(response)
-      ? response
-      : response.items
-    ).sort((a, b) =>
-      (a.sortText ?? a.label).localeCompare(b.sortText ?? b.label)
+    const items = (Array.isArray(response) ? response : response.items).sort(
+      (a, b) => (a.sortText ?? a.label).localeCompare(b.sortText ?? b.label)
     );
     if (!items.length) {
       nova.workspace.showInformativeMessage("No completions found.");
