@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+### Fixed
+
+- Unmark `key` as required for extension configuration
+
 ## 1.1.0
 
 ### Added
