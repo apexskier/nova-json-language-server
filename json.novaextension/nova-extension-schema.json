@@ -499,7 +499,7 @@
           "items": { "type": "string" }
         }
       },
-      "required": ["key", "type"]
+      "required": ["type"]
     },
     "issueMatcherPattern": {
       "type": "object",
