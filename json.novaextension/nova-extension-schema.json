@@ -53,11 +53,17 @@
     },
     "config": {
       "description": "Set of global Preferences",
-      "$ref": "#/definitions/configItemList"
+      "type": [ "string", "array" ],
+      "items": {
+        "$ref": "#/definitions/configItem"
+      }
     },
     "configWorkspace": {
       "description": "Set of workspace (project-specific) Preferences",
-      "$ref": "#/definitions/configItemList"
+      "type": [ "string", "array" ],
+      "items": {
+        "$ref": "#/definitions/configItem"
+      }
     },
     "description": {
       "description": "The user-readable descriptive text",
