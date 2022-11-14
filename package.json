@@ -30,7 +30,7 @@
     "@rollup/plugin-commonjs": "^23.0.2",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@types/jest": "^27.4.1",
-    "@types/nova-editor-node": "^4.1.7",
+    "@types/nova-editor-node": "^4.1.8",
     "@types/whatwg-fetch": "^0.0.33",
     "@typescript-eslint/eslint-plugin": "^4.0.0",
     "@typescript-eslint/parser": "^3.10.1",
