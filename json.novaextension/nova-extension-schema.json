@@ -52,14 +52,14 @@
       }
     },
     "config": {
-      "description": "Set of global Preferences",
+      "description": "Set of global Preferences. Alternatively accepts a relative path pointing to a JSON file containing the same.",
       "type": [ "string", "array" ],
       "items": {
         "$ref": "#/definitions/configItem"
       }
     },
     "configWorkspace": {
-      "description": "Set of workspace (project-specific) Preferences",
+      "description": "Set of workspace (project-specific) Preferences. Alternatively accepts a relative path pointing to a JSON file containing the same.",
       "type": [ "string", "array" ],
       "items": {
         "$ref": "#/definitions/configItem"
@@ -344,7 +344,14 @@
     "commandList": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/command"
+        "anyOf": [
+          { "$ref": "#/definitions/command" },
+          {
+            "type": "object",
+            "description": "For both the Extensions and Editor menu contexts (commands placed within the extensions and editor groups of the commands manifest key), you can optionally include separator items to better group your commands.",
+            "properties": { "separator": { "type": "boolean" } }
+          }
+        ]
       }
     },
     "command": {
@@ -392,6 +399,7 @@
       "required": ["title", "command"]
     },
     "configItemList": {
+      "$id": "#config",
       "type": "array",
       "items": {
         "$ref": "#/definitions/configItem"
@@ -475,10 +483,13 @@
           "type": "array",
           "items": {
             "anyOf": [
-              { "type": "string" },
+              { "type": ["string", "boolean", "number", "null"] },
               {
                 "type": "array",
-                "items": [{ "type": ["string", "null"] }, { "type": "string" }]
+                "items": [
+                  { "type": ["string", "boolean", "number", "null"] },
+                  { "type": "string" }
+                ]
               }
             ]
           }

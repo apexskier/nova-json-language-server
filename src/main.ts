@@ -100,26 +100,63 @@ async function asyncActivate() {
   compositeDisposable.add(registerAutoSuggest(client));
   compositeDisposable.add(registerGoToDefinition(client));
 
-  const extensionManifestSchema = {
+  const manifestSchemaUrl = `file://${nova.path.join(
+    nova.extension.path,
+    "nova-extension-schema.json"
+  )}`;
+
+  interface JSONSchema {
+    name: string,
+    description: string,
+    fileMatch: string[],
+    url?: string,
+    schema?: any
+  }
+
+  const extensionManifestSchema: JSONSchema = {
     name: "Nova Extension",
     description: "Nova extension manifest file",
-    url: `file://${nova.path.join(
-      nova.extension.path,
-      "nova-extension-schema.json"
-    )}`,
-    fileMatch: ["*.novaextension/extension.json"],
+    fileMatch: [
+      "*.novaextension/extension.json",
+    ],
+    url: manifestSchemaUrl,
   };
+
+  const extensionManifestConfigSchema: JSONSchema = {
+    name: "Nova Extension Config",
+    description: "Nova extension manifest config",
+    fileMatch: [
+      "*.novaextension/config.json",
+      "*.novaextension/*.config.json",
+      "*.novaextension/config.*.json",
+    ],
+    schema: {
+      type: "array",
+      items: {
+        "$ref": manifestSchemaUrl + "#/definitions/configItem"
+      }
+    }
+};
 
   void (async () => {
     const response = await fetch(
       "https://schemastore.azurewebsites.net/api/json/catalog.json"
     );
-    const catalog = await response.json();
+    const schemas: JSONSchema[] = await response.json()
+      .then(catalog => catalog.schemas)
+      .then((schemas: JSONSchema[]) => schemas.map(s => {
+        s.fileMatch?.includes("config.json") && s.fileMatch.push("!*.novaextension/*");
+        return s;
+      }));
 
     const params: lspTypes.DidChangeConfigurationParams = {
       settings: {
         json: {
-          schemas: [extensionManifestSchema, ...catalog.schemas],
+          schemas: [
+            extensionManifestConfigSchema,
+            extensionManifestSchema,
+            ...schemas,
+          ],
         },
       },
     };

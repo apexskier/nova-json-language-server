@@ -4,7 +4,7 @@ export function wrapCommand(
   return async function wrapped(...args: any[]) {
     try {
       await command(...args);
-    } catch (err) {
+    } catch (err: any) {
       nova.workspace.showErrorMessage(err);
     }
   };
